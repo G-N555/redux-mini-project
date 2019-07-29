@@ -14,15 +14,15 @@ router.get("/", (req, res) => {
 
 router.post("/", (req, res) => {
   const project = req.body;
-  console.log(project);
   store.dispatch(addProject(project));
-  res.status(200).send({ projects: storegit.getState() });
+  res.status(200).send({ projects: store.getState() });
 });
 
 router.get("/:projectId", (req, res) => {
-  const { projectId } = req.params;
-  // TODO retrieve and send project with given id
-  res.status(418).json({ message: "Not Implemented" });
+  const projectId = req.params.projectId;
+  res
+    .status(200)
+    .send(store.getState().find((project) => project.id === projectId));
 });
 
 router.patch("/:projectId", (req, res) => {
@@ -33,9 +33,9 @@ router.patch("/:projectId", (req, res) => {
 });
 
 router.delete("/:projectId", (req, res) => {
-  const { projectId } = req.params;
-  // TODO delete project, return status 200 with no body on success
-  res.status(418).json({ message: "Not Implemented" });
+  const projectId = req.params.projectId;
+  store.dispatch(removeProject(projectId));
+  res.status(200).send(store.getState());
 });
 
 router.use("/:projectId/builds", builds);
